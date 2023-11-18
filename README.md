@@ -1,4 +1,4 @@
-# Clearviction
+# Clearviction, yay!
 
 ## Table of Contents
 
