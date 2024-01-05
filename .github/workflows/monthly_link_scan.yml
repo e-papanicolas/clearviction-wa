@@ -1,0 +1,30 @@
+name: Monthly link scan with linkinator
+
+# on:
+#   schedule:
+#     - cron: "0 0 1 * *"
+on:
+  push:
+
+jobs:
+  linkinator:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Install jq
+        id: install-dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+        
+      - name: Run script
+        id: run-script
+        run: |
+          npx linkinator https://clearviction.org --recurse --markdown --verbosity --format JSON | jq '.links | .[] | select(.state | contains("BROKEN"))'
+
+      - name: Write JSON output to file
+        run: echo "${{ toJson(steps.run-script.outputs) }}" > output.json
